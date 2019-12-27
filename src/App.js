@@ -7,12 +7,22 @@ import "./App.css";
 function App() {
   const editor = useCallback(withReact(createEditor()), []);
 
-  const [value, setValue] = useState([
-    {
-      type: "paragraph",
-      children: [{ text: "A line of text in a paragraph." }]
-    }
-  ]);
+  const [value, setValue] = useState(
+    JSON.parse(localStorage.getItem("content")) || [
+      {
+        type: "paragraph",
+        children: [{ text: "A line of text in a paragraph." }]
+      },
+      {
+        type: "link",
+        url: "https://google.com",
+        children: [{ text: "Google" }]
+      },
+      {
+        children: [{ text: "Test it out." }, { text: "Looks good to me." }]
+      }
+    ]
+  );
 
   const renderElement = useCallback(props => {
     switch (props.element.type) {
@@ -33,7 +43,12 @@ function App() {
         <Slate
           editor={editor}
           value={value}
-          onChange={value => setValue(value)}
+          onChange={value => {
+            setValue(value);
+            // Save the value to Local Storage.
+            const content = JSON.stringify(value);
+            localStorage.setItem("content", content);
+          }}
         >
           <Editable
             renderElement={renderElement}
@@ -70,7 +85,7 @@ function App() {
                   Transforms.setNodes(
                     editor,
                     { bold: match ? null : true },
-                    { match: Text.isText, split: true }
+                    { match: n => Text.isText(n), split: true }
                   );
                   break;
                 }
