@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { createEditor, Text, Editor, Transforms } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
 import { withHistory } from "slate-history";
@@ -7,11 +7,14 @@ import withMarkdownShortcuts from "./withMarkdownShortcuts";
 
 import "./App.css";
 
+const plugins = [withReact, withHistory, withMarkdownShortcuts];
+
 function App() {
-  const editor = useCallback(
-    withMarkdownShortcuts(withHistory(withReact(createEditor()))),
-    []
-  );
+  const editor = useMemo(() => {
+    let editor = createEditor();
+    plugins.forEach(plugin => (editor = plugin(editor)));
+    return editor;
+  }, []);
 
   const [value, setValue] = useState(
     JSON.parse(localStorage.getItem("content")) || [
