@@ -3,7 +3,7 @@ import { createEditor, Text, Editor, Transforms } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
 import { withHistory } from "slate-history";
 
-import withMarkdownShortcuts from "./withMarkdownShortcuts";
+import withMarkdownShortcuts from "./plugins/withMarkdownShortcuts";
 
 import "./App.css";
 
