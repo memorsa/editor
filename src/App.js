@@ -32,9 +32,14 @@ function App() {
         children: [{ text: "A line of text in a paragraph." }]
       },
       {
-        type: "link",
-        url: "https://google.com",
-        children: [{ text: "Google" }]
+        type: "paragraph",
+        children: [
+          {
+            type: "link",
+            url: "https://google.com",
+            children: [{ text: "Google" }]
+          }
+        ]
       },
       {
         children: [{ text: "Test it out." }, { text: "Looks good to me." }]
@@ -129,7 +134,7 @@ const Element = ({ attributes, children, element }) => {
       );
     case "link":
       return (
-        <a {...attributes} href={element.url}>
+        <a {...attributes} href={element.url} contentEditable={false}>
           {children}
         </a>
       );
