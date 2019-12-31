@@ -1,8 +1,9 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { createEditor, Editor, Transforms } from "slate";
+import { createEditor } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
 import { withHistory } from "slate-history";
 
+import withLinks from "./plugins/withLinks";
 import withMarkdownShortcuts from "./plugins/withMarkdownShortcuts";
 import { onKeyDown as OnKeyDownMark } from "./plugins/withHotkey";
 
@@ -15,7 +16,7 @@ const HOTKEYS = {
   "mod+`": "code"
 };
 
-const plugins = [withReact, withHistory, withMarkdownShortcuts];
+const plugins = [withReact, withHistory, withMarkdownShortcuts, withLinks];
 
 function App() {
   const editor = useMemo(() => {
@@ -125,6 +126,12 @@ const Element = ({ attributes, children, element }) => {
         <pre {...attributes}>
           <code>{children}</code>
         </pre>
+      );
+    case "link":
+      return (
+        <a {...attributes} href={element.url}>
+          {children}
+        </a>
       );
     default:
       return <p {...attributes}>{children}</p>;
