@@ -1,11 +1,19 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { createEditor, Text, Editor, Transforms } from "slate";
+import { createEditor, Editor, Transforms } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
 import { withHistory } from "slate-history";
 
 import withMarkdownShortcuts from "./plugins/withMarkdownShortcuts";
+import { onKeyDown as OnKeyDownMark } from "./plugins/withHotkey";
 
 import "./App.css";
+
+const HOTKEYS = {
+  "mod+b": "bold",
+  "mod+i": "italic",
+  "mod+u": "underline",
+  "mod+`": "code"
+};
 
 const plugins = [withReact, withHistory, withMarkdownShortcuts];
 
@@ -56,44 +64,13 @@ function App() {
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             onKeyDown={event => {
+              for (const hotkey in HOTKEYS) {
+                const mark = HOTKEYS[hotkey];
+                OnKeyDownMark(mark, hotkey)(event, editor);
+              }
               if (event.key === "&") {
                 event.preventDefault();
                 editor.insertText("and");
-              }
-
-              if (!event.ctrlKey) {
-                return;
-              }
-
-              switch (event.key) {
-                case "`": {
-                  event.preventDefault();
-                  const [match] = Editor.nodes(editor, {
-                    match: n => n.type === "code"
-                  });
-                  Transforms.setNodes(
-                    editor,
-                    { type: match ? "paragraph" : "code" },
-                    { match: n => Editor.isBlock(editor, n) }
-                  );
-                  break;
-                }
-
-                case "b": {
-                  event.preventDefault();
-                  const [match] = Editor.nodes(editor, {
-                    match: n => n.bold === true
-                  });
-                  Transforms.setNodes(
-                    editor,
-                    { bold: match ? null : true },
-                    { match: n => Text.isText(n), split: true }
-                  );
-                  break;
-                }
-
-                default:
-                  return;
               }
             }}
           />
@@ -106,6 +83,18 @@ function App() {
 const Leaf = ({ attributes, children, leaf }) => {
   if (leaf.bold) {
     children = <strong>{children}</strong>;
+  }
+
+  if (leaf.code) {
+    children = <code>{children}</code>;
+  }
+
+  if (leaf.italic) {
+    children = <em>{children}</em>;
+  }
+
+  if (leaf.underline) {
+    children = <u>{children}</u>;
   }
 
   return <span {...attributes}>{children}</span>;
