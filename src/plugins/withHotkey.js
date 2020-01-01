@@ -10,7 +10,7 @@ export const onKeyDown = (mark, hotkey) => {
   };
 };
 
-const toggleMark = (editor, format) => {
+export const toggleMark = (editor, format) => {
   const isActive = isMarkActive(editor, format);
 
   if (isActive) {
@@ -20,7 +20,7 @@ const toggleMark = (editor, format) => {
   }
 };
 
-const isMarkActive = (editor, format) => {
+export const isMarkActive = (editor, format) => {
   const marks = Editor.marks(editor);
   return marks ? marks[format] === true : false;
 };
