@@ -9,6 +9,7 @@ import { Range, createEditor, Editor } from "slate";
 import { Slate, Editable, withReact, ReactEditor, useSlate } from "slate-react";
 import { withHistory } from "slate-history";
 import { css } from "emotion";
+import Portal from "@reach/portal";
 
 import withLinks from "./plugins/withLinks";
 import withMarkdownShortcuts from "./plugins/withMarkdownShortcuts";
@@ -18,7 +19,7 @@ import {
   onKeyDown as OnKeyDownMark
 } from "./plugins/withHotkey";
 
-import { Button, Icon, Menu, Portal } from "./components";
+import { Button, Icon, Menu } from "./components";
 import "./App.css";
 
 const HOTKEYS = {
